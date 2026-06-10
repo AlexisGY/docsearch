@@ -139,7 +139,7 @@ export default function BatchScreen({
                 <ListFilter className="w-5 h-5" />
               </div>
               <span className="text-xs font-bold text-[#121c2c] uppercase tracking-tighter">TMP_Termino_Normalizado</span>
-              <span className="text-[10px] text-[#43474e] font-mono-sm">Sin Tildes/Stop</span>
+              <span className="text-[10px] text-[#43474e] font-mono-sm">Sin tildes / sin palabras vacías</span>
             </div>
 
             <ArrowRight className="w-5 h-5 text-[#c4c6cf]" />
@@ -228,7 +228,7 @@ export default function BatchScreen({
                     )}
                     {log.estado === 'Fallo' && (
                       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-red-50 text-red-700 border border-red-200">
-                        Pendiente
+                        Fallo
                       </span>
                     )}
                   </td>

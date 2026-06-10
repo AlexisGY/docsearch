@@ -1,7 +1,18 @@
 import express from 'express';
+import fs from 'fs';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import { getDB, delay, cleanToken, STOP_WORDS } from './src/db.js';
+
+function getDatabaseSizeDesc(): string {
+  try {
+    const dbPath = path.resolve(process.cwd(), 'docsearch.db');
+    const stats = fs.statSync(dbPath);
+    return `${(stats.size / (1024 * 1024)).toFixed(2)} MB`;
+  } catch {
+    return 'No disponible';
+  }
+}
 
 async function startServer() {
   const app = express();
@@ -308,7 +319,7 @@ async function startServer() {
           terminos_unicos: terminosCount?.count || 0,
           libros_indexados: librosCount?.count || 0,
           indices: indicesCount?.count || 0,
-          tamano_disco_desc: '0.24 MB'
+          tamano_disco_desc: getDatabaseSizeDesc()
         }
       });
     } catch (error: any) {

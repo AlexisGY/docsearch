@@ -1,6 +1,7 @@
 import sqlite3 from 'sqlite3';
 import { open, Database } from 'sqlite';
 import path from 'path';
+import { seedBooks } from './seedBooks.js';
 
 let dbInstance: Database | null = null;
 
@@ -119,7 +120,7 @@ async function initDB(db: Database) {
   // Semilla de libros si está vacío
   const booksCount = await db.get<{ count: number }>('SELECT COUNT(*) as count FROM LIBRO;');
   if (booksCount && booksCount.count === 0) {
-    const seedBooks = [
+    const baseSeedBooks = [
       {
         titulo: 'Introducción a los Algoritmos',
         autor: 'Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest',
@@ -150,7 +151,7 @@ async function initDB(db: Database) {
       }
     ];
 
-    for (const book of seedBooks) {
+    for (const book of baseSeedBooks) {
       await db.run(
         'INSERT INTO LIBRO (titulo, autor, contenido, fecha_registro, estado_indexado) VALUES (?, ?, ?, ?, ?)',
         [book.titulo, book.autor, book.contenido, book.fecha_registro, book.estado_indexado]
@@ -170,6 +171,32 @@ async function initDB(db: Database) {
         'INSERT INTO BATCH_LOG (paso, estado, registros_procesados, hora) VALUES (?, ?, ?, ?)',
         [log.paso, log.estado, log.registros_procesados, log.hora]
       );
+    }
+  }
+
+  const currentBooksCount = await db.get<{ count: number }>('SELECT COUNT(*) as count FROM LIBRO;');
+  const booksToAdd = seedBooks.length - (currentBooksCount?.count || 0);
+
+  if (booksToAdd > 0) {
+    const existingDemoRows = await db.all<{ titulo: string }[]>(
+      'SELECT titulo FROM LIBRO;'
+    );
+    const existingDemoTitles = new Set(existingDemoRows.map(row => row.titulo));
+    let inserted = 0;
+
+    for (const book of seedBooks) {
+      if (inserted >= booksToAdd) {
+        break;
+      }
+      if (existingDemoTitles.has(book.titulo)) {
+        continue;
+      }
+
+      await db.run(
+        'INSERT INTO LIBRO (titulo, autor, contenido, fecha_registro, estado_indexado) VALUES (?, ?, ?, ?, ?)',
+        [book.titulo, book.autor, book.contenido, book.fecha_registro, book.estado_indexado]
+      );
+      inserted++;
     }
   }
 }

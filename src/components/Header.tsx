@@ -261,7 +261,7 @@ export default function Header({
             />
           </div>
           <div className="hidden lg:block text-left">
-            <p className="text-xs font-semibold text-[#121c2c]">Yan Poll</p>
+            <p className="text-xs font-semibold text-[#121c2c]">Yanpoll</p>
             <p className="text-[10px] text-[#43474e]">Investigador</p>
           </div>
         </div>
