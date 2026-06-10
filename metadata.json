@@ -1,0 +1,6 @@
+{
+  "name": "DocSearch",
+  "description": "Buscador de libros y documentos de formato académico utilizando listas invertidas procesadas localmente en SQLite.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
